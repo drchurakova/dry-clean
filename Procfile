@@ -1,0 +1,1 @@
+web: gunicorn -w 1 clean:app —preload
