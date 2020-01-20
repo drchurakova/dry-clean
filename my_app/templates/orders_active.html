@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+    <script type="text/javascript">
+    function buttonClick (button)
+    {
+        arr = button.id.split('_');
+        document.getElementById("id_order").value = arr[0];
+        document.getElementById("id_item").value = arr[1];
+        document.querySelector("input[id*='submit']").click();
+    }
+    </script>
+{% endblock %}
+	
+{% block app_content %}
+	<h1>На данной странице отображаются заказы в работе.</h1>
+    <div class="row">
+        <div class="col-md-6">
+            {% for order in orders %}
+                <div class="well well-sm">
+                    <p>
+                        <b>Номер заказа: {{ order[0] }}</b> <br>
+                        Дата приема: {{ order[1] }}<br>
+                        Цена: {{ order[4] }}<br>
+                        {% if order[5] != 0 %}
+                            Компенсация: {{ order[5] }}<br>
+                        {% endif %}
+                        {% if current_user.is_client %}
+                            Ответсвенный сотрудник: {{ account[order[7] - 2][0] }}<br>
+                        {% else %}
+                            {% if order[6] != 1 %}
+                                Клиент: {{ account[order[6] - 2][0] }}<br>
+                            {% else %}
+                                Клиент не зарегистрирован<br>
+                            {% endif %}
+                            Телефон клиента: {{ order[8] }}
+                        {% endif %}
+                        {% for garment in garments %}
+                            {% if garment[1] == order[0] %}
+                                <div class="well well-sm">
+                                    <p>
+                                        <b>Номер вещи: {{ garment[0] }}</b><br>
+                                        Материал: {{ material[garment[2] - 1][0] }}<br>
+                                        Категория вещи: {{ category[garment[4] - 1][0] }}<br>
+                                        Этап чистки: {{ step[garment[3] - 1][0] }}
+                                        {% if not current_user.is_client %}
+                                            <br><input class="btn btn-default" type="button" name="button_garment_{{ garment[0] }}" id="{{ order[0] }}_{{ garment[0] }}" value="Изменить статус" onclick="buttonClick(this)"/>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div style='display: none;'>
+        <form action='' method='post' novalidate>
+            {{ form.hidden_tag() }}
+            {{ form.id_order() }}
+            {{ form.id_item() }}
+            {{ form.submit() }}
+        </form>
+    </div>
+{% endblock %}

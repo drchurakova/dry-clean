@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+	
+{% block app_content %}
+	<h1>На данной странице отображаются все заказы химчистки.</h1>
+    <div class="row">
+        <div class="col-md-6">
+            {% for order in orders %}
+                <div class="well well-sm">
+                    <p>
+                        <b>Номер заказа: {{ order[0] }}</b> <br>
+                        Дата приема: {{ order[1] }}<br>
+                        Дата готовности:
+                        {% if order[2] == None %}
+                            заказ не готов<br>
+                        {% else %}
+                            {{ order[2] }}<br>
+                            Дата передачи клиенту:
+                            {% if order[3] == None %}
+                                ожидает клиента<br>
+                            {% else %}
+                                {{ order[3] }}<br>
+                            {% endif %}
+                        {% endif %}
+                        Цена: {{ order[4] }}<br>
+                        {% if order[5] != 0 %}
+                            Компенсация: {{ order[5] }}<br>
+                        {% endif %}
+                        Ответсвенный сотрудник: {{ account[order[7] - 2][0] }}<br>
+                        {% if order[6] != 1 %}
+                            Клиент: {{ account[order[6] - 2][0] }}<br>
+                        {% else %}
+                            Клиент не зарегистрирован<br>
+                        {% endif %}
+                        Телефон клиента: {{ order[8] }}
+                        {% for garment in garments %}
+                            {% if garment[1] == order[0] %}
+                                <div class="well well-sm">
+                                    <p>
+                                        Материал: {{ material[garment[2] - 1][0] }}<br>
+                                        Категория вещи: {{ category[garment[4] - 1][0] }}<br>
+                                        Этап чистки: {{ step[garment[3] - 1][0] }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

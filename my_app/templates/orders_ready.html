@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+    <script type="text/javascript">
+    function buttonClick (button)
+    {
+        document.getElementById("id_order").value = button.id;
+        document.querySelector("input[id*='submit']").click();
+    }
+    </script>
+{% endblock %}
+
+{% block app_content %}
+	<h1>Все заказы, которые готовы к выдаче.</h1>
+    <div class="row">
+        <div class="col-md-6">
+            {% for order in orders %}
+                <div class="well well-sm">
+                    <p>
+                        <b>Номер заказа: {{ order[0] }}</b> <br>
+                        Дата приема: {{ order[1] }}<br>
+                        Дата готовности: {{ order[2] }}<br>
+                        Цена: {{ order[4] }}<br>
+                        {% if order[5] != 0 %}
+                            Компенсация: {{ order[5] }}<br>
+                        {% endif %}
+                        {% if current_user.is_client %}
+                            Ответсвенный сотрудник: {{ account[order[7] - 2][0] }}<br>
+                        {% else %}
+                            {% if order[6] != 1 %}
+                                Клиент: {{ account[order[6] - 2][0] }}<br>
+                            {% else %}
+                                Клиент не зарегистрирован<br>
+                            {% endif %}
+                            Телефон клиента: {{ order[8] }}
+                        {% endif %}
+                        {% for garment in garments %}
+                            {% if garment[1] == order[0] %}
+                                <div class="well well-sm">
+                                    <p>
+                                        Материал: {{ material[garment[2] - 1][0] }}<br>
+                                        Категория вещи: {{ category[garment[4] - 1][0] }}<br>
+                                        Этап чистки: {{ step[garment[3] - 1][0] }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% if not current_user.is_client %}
+                        <input class="btn btn-default" type="button" name="button_order_{{ order[0] }}" id="{{ order[0] }}" value="Клиент получил заказ" onclick="buttonClick(this)"/>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div style='display: none;'>
+        <form action='' method='post' novalidate>
+            {{ form.hidden_tag() }}
+            {{ form.id_order() }}
+            {{ form.submit() }}
+        </form>
+    </div>
+{% endblock %}

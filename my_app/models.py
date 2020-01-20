@@ -20,9 +20,9 @@ class User(UserMixin):
         self.salary = salary
         self.phone = phone
         if inn is None:
-            self.client = True
+            self.is_client = True
         else:
-            self.client = False
+            self.is_client = False
 
     def __repr__(self):
         return '<User {}>'.format(self.login)
