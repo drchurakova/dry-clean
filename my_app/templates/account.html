@@ -7,14 +7,14 @@
 	{% if not current_user.is_client %}
 		<a class="btn btn-default" href="{{ url_for('create_account') }}">Создать аккаунт для нового сотрудника</a><br><br>
 		{% if current_user.id_job > 9 %}
+			<p>Введите ИНН сотрудника для изменения его аккаунта:</p>
 			<div class="row">
-			<div class="col-md-4">
-				{{ wtf.quick_form(form) }}
-			</div>
-    	</div>
-		<br>
+				<div class="col-md-4">
+					{{ wtf.quick_form(form) }}
+				</div>
+    		</div>
+			<br>
 		{% endif %}
 	{% endif %}
 	<a class="btn btn-default" href="{{ url_for('change_password') }}">Сменить пароль</a><br><br>
-	<p>Введите ИНН сотрудника для изменения его аккаунта:</p>
 {% endblock %}
